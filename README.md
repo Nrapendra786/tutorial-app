@@ -3,4 +3,4 @@
 -- start cmd 
 -- provide project path 
 -- docker-compose up  
--- docker-compose down (command to be executed in case stop docker) 
+-- docker-compose down (command to be executed to stop docker) 

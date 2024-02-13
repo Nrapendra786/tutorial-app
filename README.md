@@ -1,6 +1,6 @@
--- Docker must be installed in system
--- Jdk 17 must be installed in system+
--- start cmd 
--- provide project path
--- docker-compose up 
--- docker-compose down (command to be executed in case stop docker)
+-- Docker must be installed in system  "\n"
+-- Jdk 17 must be installed in system  "\n"
+-- start cmd "\n"
+-- provide project path "\n"
+-- docker-compose up   "\n"
+-- docker-compose down (command to be executed in case stop docker) "\n"

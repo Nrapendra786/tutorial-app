@@ -19,20 +19,24 @@ public class TutorialController {
     private TutorialRepository repository;
 
     @GetMapping("/all/")
-    List<Tutorial> all() {
-        return repository.findAll();
+    ResponseEntity<List<Tutorial>> all() {
+        return new ResponseEntity<>(repository.findAll(),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    Optional<Tutorial> one(@PathVariable Long id) {
-        return Optional.of(repository.findById(id)
-                .orElseThrow(TutorialException::new));
+    ResponseEntity<Tutorial> one(@PathVariable Long id) {
+
+        Tutorial tutorial = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
+                                    "Not found Tutorial with id = " + id));
+        return new ResponseEntity<>(tutorial, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     ResponseEntity<Optional<Tutorial>> update(@PathVariable Long id, @RequestBody Tutorial tutorial) {
         try {
-            Optional.ofNullable(repository.findById(id).orElseThrow(() -> new TutorialException("tutorial is not found")));
+            Optional.ofNullable(repository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"tutorial is not found")));
             repository.saveAndFlush(tutorial);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception ex) {
@@ -82,5 +86,4 @@ public class TutorialController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

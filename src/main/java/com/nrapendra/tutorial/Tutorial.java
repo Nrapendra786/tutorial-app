@@ -14,9 +14,6 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Tutorial {
 
-//    public Tutorial() {
-//    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -29,10 +26,4 @@ public class Tutorial {
 
     @Column(name = "published")
     private String published;
-
-    @Override
-    public String toString() {
-        return "Tutorial [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
-    }
-
 }

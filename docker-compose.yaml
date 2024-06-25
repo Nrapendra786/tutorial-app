@@ -1,34 +1,85 @@
-version: "3.7"
 services:
-  api_service:
-    build: .
-    restart: always
-    ports:
-      - 8080:8080
-    networks:
-      - springapimysql-net
-    environment:
-      - spring.datasource.username=root
-      - spring.datasource.password=123456
-      - spring.datasource.url=jdbc:mysql://mysqldb:3306/basics?allowPublicKeyRetrieval=true
-    depends_on:
-      - mysqldb
-    volumes:
-      - .m2:/root/.m2
-
-  mysqldb:
-    image: "mysql:latest"
+  mysql_db:
+    image: "mysql:8.1"
     restart: always
     ports:
       - 3306:3306
-    networks:
-      - springapimysql-net
+    expose:
+      - 3306
+#    volumes:
+#      - my-db:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: basics
-      MYSQL_PASSWORD: 123456
-      MYSQL_ROOT_PASSWORD: 123456
-networks:
-  springapimysql-net:
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+#    volumes:
+#      my-db
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+#services:
+#  api_service:
+#    build:
+#       context: .
+#       dockerfile: Dockerfile
+#    ports:
+#      - 8090:8090
+#    networks:
+#      - springapimysql-net
+#    environment:
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=123456
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/basic
+#    depends_on:
+#      - mysqldb
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+#  mysqldb:
+#    image: "mysql:8.1.0"
+#    ports:
+#      - 3306:3306
+#    networks:
+#      - springapimysql-net
+#    environment:
+#      - MYSQL_DATABASE=basic
+#      - MYSQL_ROOT_PASSWORD=123456
+#volumes:
+#    mysql-data:
+#networks:
+#  springapimysql-net:
 
 
 

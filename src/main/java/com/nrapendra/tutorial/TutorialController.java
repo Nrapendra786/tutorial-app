@@ -1,43 +1,32 @@
-package org.example;
-
+package com.nrapendra.tutorial;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/tutorials")
-@Transactional
 @Slf4j
+@AllArgsConstructor
 public class TutorialController {
 
     private TutorialRepository repository;
 
-    @Autowired
-    TutorialController(TutorialRepository tutorialRepository){
-        this.repository = tutorialRepository;
-    }
-
-    @GetMapping("/")
+    @GetMapping("/all/")
     List<Tutorial> all() {
-        List<Tutorial> tutorials = repository.findAll();
-        return tutorials;
+        return repository.findAll();
     }
 
     @GetMapping("/{id}")
     Optional<Tutorial> one(@PathVariable Long id) {
         return Optional.of(repository.findById(id)
-                .orElseThrow(() -> new TutorialException("tutorial is not found")));
+                .orElseThrow(TutorialException::new));
     }
 
     @PutMapping("/{id}")

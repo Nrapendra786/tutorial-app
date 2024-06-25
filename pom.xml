@@ -8,7 +8,7 @@
         <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>net.javaguides</groupId>
+    <groupId>com.nrapendra</groupId>
     <artifactId>springboot-restful-webservices</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>springboot-restful-webservices</name>
@@ -17,24 +17,11 @@
         <java.version>17</java.version>
     </properties>
 
-
-    <dependencyManagement>
-        <dependencies>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>3.4.3</version>
-        </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -44,7 +31,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>

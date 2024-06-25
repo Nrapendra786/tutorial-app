@@ -1,9 +1,10 @@
-package org.example;
+package com.nrapendra.tutorial;
 
 public class TutorialException extends RuntimeException {
 
-    private String message="";
+    public TutorialException(){
+
+    }
     public TutorialException(String message){
-        this.message = message;
     }
 }

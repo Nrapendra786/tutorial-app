@@ -1,81 +1,41 @@
 services:
-  mysql_db:
-    image: "mysql:8.1"
-    restart: always
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8090
+    depends_on:
+       mysqldb :
+           condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}&autoReconnect=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+    env_file: ./.env
+    networks:
+      - springboot-mysql-network
+  mysqldb:
+    image: mysql:5.7
+    container_name: mysqldb
     ports:
       - 3306:3306
-    expose:
-      - 3306
     environment:
-      MYSQL_DATABASE: ${MYSQLDB_DATABASE}
-      MYSQL_USER: ${MYSQLDB_USERNAME}
-      MYSQL_PASSWORD: ${MYSQLDB_ROOT_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQLDB_ROOT_PASSWORD}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
-#services:
-#  api_service:
-#    build:
-#       context: .
-#       dockerfile: Dockerfile
-#    ports:
-#      - 8090:8090
-#    networks:
-#      - springapimysql-net
-#    environment:
-#      - SPRING_DATASOURCE_USERNAME=root
-#      - SPRING_DATASOURCE_PASSWORD=123456
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/basic
-#    depends_on:
-#      - mysqldb
-#    volumes:
-#      - mysql-data:/var/lib/mysql
-#  mysqldb:
-#    image: "mysql:8.1.0"
-#    ports:
-#      - 3306:3306
-#    networks:
-#      - springapimysql-net
-#    environment:
-#      - MYSQL_DATABASE=basic
-#      - MYSQL_ROOT_PASSWORD=123456
-#volumes:
-#    mysql-data:
-#networks:
-#  springapimysql-net:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - springboot-mysql-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "mysqldb", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      retries: 10
+      timeout: 30s
+volumes:
+  mysql-data:
+networks:
+  springboot-mysql-network:
+    name: springboot-mysql-network
 
 
 

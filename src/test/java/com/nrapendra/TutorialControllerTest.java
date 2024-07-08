@@ -3,7 +3,6 @@ package com.nrapendra;
 import com.nrapendra.tutorial.Tutorial;
 import com.nrapendra.tutorial.TutorialRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,14 +39,12 @@ class TutorialControllerTest {
     }
 
     @Test
-    
+
     public void testCreateTutorial() {
         //given
-        Tutorial tutorial = new Tutorial();
-        tutorial.setId(atomicLong.get());
-        tutorial.setDescription("physics tutorial");
-        tutorial.setTitle("physics");
-        tutorial.setPublished("physics");
+        Tutorial tutorial = Tutorial.builder()
+                .id(atomicLong.get())
+                .description("physics tutorial").title("physics").published("physics").build();
 
         //when
         ResponseEntity<Tutorial> postResponse = restTemplate.postForEntity(getRootUrl() + "/tutorials/", tutorial, Tutorial.class);
@@ -55,74 +52,76 @@ class TutorialControllerTest {
         //then
         Assertions.assertNotNull(postResponse);
         Assertions.assertNotNull(postResponse.getBody());
-        Assertions.assertEquals(postResponse.getBody().getDescription(),"physics tutorial");
-        Assertions.assertEquals(postResponse.getBody().getTitle(),"physics");
-        Assertions.assertEquals(postResponse.getBody().getPublished(),"physics");
+        Assertions.assertEquals(postResponse.getBody().getDescription(), "physics tutorial");
+        Assertions.assertEquals(postResponse.getBody().getTitle(), "physics");
+        Assertions.assertEquals(postResponse.getBody().getPublished(), "physics");
     }
 
     @Test
     public void testGetAllTutorials() {
         //given
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        Tutorial tutorial = new Tutorial();
-        tutorial.setId(atomicLong.get());
-        tutorial.setDescription("physics tutorial");
-        tutorial.setTitle("physics");
-        tutorial.setPublished("physics");
-        tutorialRepository.save(tutorial);
+        HttpEntity<String> entity = new HttpEntity<String>(null, new HttpHeaders());
+        long id = atomicLong.get();
+        saveToTutorial(id);
 
         //when
         ResponseEntity<Tutorial[]> postResponse = restTemplate.exchange(getRootUrl() + "/tutorials/all/",
                 HttpMethod.GET, entity, Tutorial[].class);
 
         //then
-        Tutorial [] tutorialArray = postResponse.getBody();
+        Tutorial[] tutorialArray = postResponse.getBody();
         assert tutorialArray != null;
-        Assertions.assertEquals(tutorialArray[0].getDescription(),"physics tutorial");
-        Assertions.assertEquals(tutorialArray[0].getTitle(),"physics");
-        Assertions.assertEquals(tutorialArray[0].getPublished(),"physics");
+        Assertions.assertEquals(tutorialArray[0].getDescription(), "physics tutorial");
+        Assertions.assertEquals(tutorialArray[0].getTitle(), "physics");
+        Assertions.assertEquals(tutorialArray[0].getPublished(), "physics");
     }
 
     @Test
     public void testGetTutorialById() {
         long id = atomicLong.get();
-        saveToTutorial(id);
 
-        Tutorial getResponse =  restTemplate.getForObject(getRootUrl() + "/tutorials/" + id, Tutorial.class);
+        Tutorial tutorial = Tutorial.builder()
+                .id(id)
+                .description("physics tutorial").title("physics").published("physics").build();
 
-        Assertions.assertEquals(getResponse.getDescription(),"physics tutorial");
-        Assertions.assertEquals(getResponse.getTitle(),"physics");
-        Assertions.assertEquals(getResponse.getPublished(),"physics");
+        ResponseEntity<Tutorial> tutorialResponse = restTemplate.postForEntity(getRootUrl() + "/tutorials/", tutorial, Tutorial.class);
+
+        Assertions.assertNotNull(tutorialResponse.getBody());
+
+        Tutorial getResponse = restTemplate.getForObject(getRootUrl() + "/tutorials/" + tutorialResponse.getBody().getId(), Tutorial.class);
+
+        Assertions.assertEquals(getResponse.getDescription(), "physics tutorial");
+        Assertions.assertEquals(getResponse.getTitle(), "physics");
+        Assertions.assertEquals(getResponse.getPublished(), "physics");
     }
 
     @Test
     public void testUpdateTutorial() {
         //given
-        long id= atomicLong.get();
+        long id = atomicLong.get();
         saveToTutorial(id);
         Tutorial tutorial = restTemplate.getForObject(getRootUrl() + "/tutorials/" + id, Tutorial.class);
-        tutorial.setId(atomicLong.get());
-        tutorial.setDescription("chemistry tutorial");
-        tutorial.setTitle("chemistry");
-        tutorial.setPublished("chemistry");
+
+        tutorial = Tutorial.builder()
+                .id(id)
+                .description("chemistry tutorial").title("chemistry").published("chemistry").build();
 
         //when
         restTemplate.put(getRootUrl() + "/tutorials/" + id, tutorial);
 
         //then
         Tutorial postResponse = restTemplate.getForObject(getRootUrl() + "/tutorials/" + id, Tutorial.class);
-        Assertions.assertEquals(postResponse.getDescription(),"chemistry tutorial");
-        Assertions.assertEquals(postResponse.getTitle(),"chemistry");
-        Assertions.assertEquals(postResponse.getPublished(),"chemistry");
+        Assertions.assertEquals(postResponse.getDescription(), "chemistry tutorial");
+        Assertions.assertEquals(postResponse.getTitle(), "chemistry");
+        Assertions.assertEquals(postResponse.getPublished(), "chemistry");
     }
 
     @Test
     public void testDeleteTutorial() {
         //given
-        int id = 2;
+        long id = atomicLong.get();
 
-        Tutorial tutorial = restTemplate.getForObject(getRootUrl() + "/tutorials/" + atomicLong.get(), Tutorial.class);
+        Tutorial tutorial = restTemplate.getForObject(getRootUrl() + "/tutorials/" + id, Tutorial.class);
         Assertions.assertNotNull(tutorial);
 
         //when
@@ -136,12 +135,10 @@ class TutorialControllerTest {
         }
     }
 
-    private void saveToTutorial(Long id){
-        Tutorial tutorial = new Tutorial();
-        tutorial.setId(id);
-        tutorial.setDescription("physics tutorial");
-        tutorial.setTitle("physics");
-        tutorial.setPublished("physics");
+    private void saveToTutorial(Long id) {
+        Tutorial tutorial = Tutorial.builder()
+                .id(id)
+                .description("physics tutorial").title("physics").published("physics").build();
         tutorialRepository.saveAndFlush(tutorial);
     }
 

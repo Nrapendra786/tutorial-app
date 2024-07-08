@@ -4,19 +4,20 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8090:8090
+      - "8090:8090"
+    expose:
+       - "8090"
     depends_on:
-       mysqldb :
-           condition: service_healthy
+       - mysqldb
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}&autoReconnect=true&useSSL=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
     env_file: ./.env
     networks:
       - springboot-mysql-network
   mysqldb:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: mysqldb
     ports:
       - 3306:3306
@@ -25,12 +26,24 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
     networks:
       - springboot-mysql-network
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "mysqldb", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
-      retries: 10
-      timeout: 30s
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
 volumes:
   mysql-data:
 networks:

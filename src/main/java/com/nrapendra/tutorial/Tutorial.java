@@ -1,16 +1,13 @@
 package com.nrapendra.tutorial;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Table
 @Entity
 @Getter
 @Setter
-@ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class Tutorial {
 
@@ -18,12 +15,12 @@ public class Tutorial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title",nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description",nullable = false)
     private String description;
 
-    @Column(name = "published")
+    @Column(name = "published",nullable = false)
     private String published;
 }

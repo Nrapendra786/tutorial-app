@@ -2,8 +2,9 @@ package com.nrapendra;
 
 import com.nrapendra.tutorial.Tutorial;
 import com.nrapendra.tutorial.TutorialRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TutorialApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Disabled
+@Slf4j
 class TutorialControllerTest {
 
     @Autowired
@@ -39,7 +40,7 @@ class TutorialControllerTest {
     }
 
     @Test
-    //@Disabled
+    
     public void testCreateTutorial() {
         //given
         Tutorial tutorial = new Tutorial();
@@ -60,39 +61,46 @@ class TutorialControllerTest {
     }
 
     @Test
-    //@Disabled
     public void testGetAllTutorials() {
         //given
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+        Tutorial tutorial = new Tutorial();
+        tutorial.setId(atomicLong.get());
+        tutorial.setDescription("physics tutorial");
+        tutorial.setTitle("physics");
+        tutorial.setPublished("physics");
+        tutorialRepository.save(tutorial);
 
         //when
         ResponseEntity<Tutorial[]> postResponse = restTemplate.exchange(getRootUrl() + "/tutorials/all/",
                 HttpMethod.GET, entity, Tutorial[].class);
 
         //then
-        Tutorial [] tutorial = postResponse.getBody();
-        assert tutorial != null;
-        Assertions.assertEquals(tutorial[0].getDescription(),"physics tutorial");
-        Assertions.assertEquals(tutorial[0].getTitle(),"physics");
-        Assertions.assertEquals(tutorial[0].getPublished(),"physics");
+        Tutorial [] tutorialArray = postResponse.getBody();
+        assert tutorialArray != null;
+        Assertions.assertEquals(tutorialArray[0].getDescription(),"physics tutorial");
+        Assertions.assertEquals(tutorialArray[0].getTitle(),"physics");
+        Assertions.assertEquals(tutorialArray[0].getPublished(),"physics");
     }
 
     @Test
-    //@Disabled
     public void testGetTutorialById() {
-        Tutorial getResponse =  restTemplate.getForObject(getRootUrl() + "/tutorials/" + atomicLong.get(), Tutorial.class);
+        long id = atomicLong.get();
+        saveToTutorial(id);
+
+        Tutorial getResponse =  restTemplate.getForObject(getRootUrl() + "/tutorials/" + id, Tutorial.class);
+
         Assertions.assertEquals(getResponse.getDescription(),"physics tutorial");
         Assertions.assertEquals(getResponse.getTitle(),"physics");
         Assertions.assertEquals(getResponse.getPublished(),"physics");
     }
 
     @Test
-    //@Disabled
     public void testUpdateTutorial() {
-
         //given
         long id= atomicLong.get();
+        saveToTutorial(id);
         Tutorial tutorial = restTemplate.getForObject(getRootUrl() + "/tutorials/" + id, Tutorial.class);
         tutorial.setId(atomicLong.get());
         tutorial.setDescription("chemistry tutorial");
@@ -110,10 +118,10 @@ class TutorialControllerTest {
     }
 
     @Test
-    //@Disabled
     public void testDeleteTutorial() {
         //given
         int id = 2;
+
         Tutorial tutorial = restTemplate.getForObject(getRootUrl() + "/tutorials/" + atomicLong.get(), Tutorial.class);
         Assertions.assertNotNull(tutorial);
 
@@ -127,4 +135,14 @@ class TutorialControllerTest {
             assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
         }
     }
+
+    private void saveToTutorial(Long id){
+        Tutorial tutorial = new Tutorial();
+        tutorial.setId(id);
+        tutorial.setDescription("physics tutorial");
+        tutorial.setTitle("physics");
+        tutorial.setPublished("physics");
+        tutorialRepository.saveAndFlush(tutorial);
+    }
+
 }

@@ -11,12 +11,14 @@ EXPOSE 8090
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 
-##
-## Build stage
-##
-#FROM maven:3.8.3-openjdk-17 AS build
-#COPY src /home/app/src
-#COPY pom.xml /home/app
-#RUN mvn -f /home/app/pom.xml clean package
-#EXPOSE 8080
-#ENTRYPOINT ["java","-jar","/home/app/target/springboot-restful-webservices-0.0.1-SNAPSHOT.jar"]
+
+
+#FROM bellsoft/liberica-openjdk-alpine:17
+#ARG JAR_FILE=target/*.jar
+#COPY ${JAR_FILE} app.jar
+#ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.30.0/opentelemetry-javaagent.jar /opt/opentelemetry-agent.jar
+#ENTRYPOINT java -javaagent:/opt/opentelemetry-agent.jar \
+#    -Dotel.resource.attributes=service.instance.id=$HOSTNAME \
+#    -jar /app.jar
+
+

@@ -1,6 +1,6 @@
 This is crud application developed using Java, SpringBoot, Docker, Prometheus and Grafana
 
--- Docker must be installed in system   
+-- Java 17 or higher version and Docker must be installed in system   
 -- start cmd 
 -- provide project path 
 -- docker-compose up  

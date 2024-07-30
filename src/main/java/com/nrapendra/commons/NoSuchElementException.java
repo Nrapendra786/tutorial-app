@@ -1,4 +1,4 @@
-package com.nrapendra.tutorial;
+package com.nrapendra.commons;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

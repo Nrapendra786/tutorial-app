@@ -1,21 +1,21 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8090:8090"
-    expose:
-       - "8090"
-    depends_on:
-       - mysqldb
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-    env_file: ./.env
-    networks:
-      - springboot-mysql-network
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8090:8090"
+#    expose:
+#       - "8090"
+#    depends_on:
+#       - mysqldb
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
+#      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+#      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+#    env_file: ./.env
+#    networks:
+#      - springboot-mysql-network
   mysqldb:
     image: mysql:8.0
     container_name: mysqldb

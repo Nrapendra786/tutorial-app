@@ -1,5 +1,6 @@
-package com.nrapendra.tutorial;
+package com.nrapendra.course;
 
+import com.nrapendra.commons.NoSuchElementException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,33 +12,33 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/tutorials")
+@RequestMapping(value = "/courses")
 @Slf4j
 @AllArgsConstructor
-public class TutorialController {
+public class CourseController {
 
-    private TutorialRepository repository;
+    private CourseRepository courseRepository;
 
     @GetMapping("/all/")
-    ResponseEntity<List<Tutorial>> all() {
-        return new ResponseEntity<>(repository.findAll(),HttpStatus.OK);
+    ResponseEntity<List<Course>> findAll() {
+        return new ResponseEntity<>(courseRepository.findAll(),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Tutorial> one(@PathVariable Long id) {
+    ResponseEntity<Course> findOne(@PathVariable Long id) {
 
-        Tutorial tutorial = repository.findById(id)
+        Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
-                                    "Not found Tutorial with id = " + id));
-        return new ResponseEntity<>(tutorial, HttpStatus.OK);
+                                    "Not found course with id = " + id));
+        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Optional<Tutorial>> update(@PathVariable Long id, @RequestBody Tutorial tutorial) {
+    ResponseEntity<Optional<Course>> update(@PathVariable Long id, @RequestBody Course course) {
         try {
-            Optional.ofNullable(repository.findById(id)
-                    .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"tutorial is not found")));
-            repository.saveAndFlush(tutorial);
+            Optional.ofNullable(courseRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"course is not found")));
+            courseRepository.saveAndFlush(course);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception ex) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -45,19 +46,19 @@ public class TutorialController {
     }
 
     @PostMapping("/")
-    ResponseEntity<Tutorial> create(@RequestBody Tutorial tutorial) {
+    ResponseEntity<Course> create(@RequestBody Course course) {
         try {
-            Tutorial _tutorial = repository.save(tutorial);
-            return new ResponseEntity<>(_tutorial, HttpStatus.CREATED);
+            Course _course = courseRepository.save(course);
+            return new ResponseEntity<>(_course, HttpStatus.CREATED);
         } catch (Exception ex) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Tutorial> delete(@PathVariable Long id) {
+    ResponseEntity<Course> delete(@PathVariable Long id) {
         try {
-            repository.deleteById(id);
+            courseRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -65,9 +66,9 @@ public class TutorialController {
     }
 
     @DeleteMapping("/")
-    ResponseEntity<Tutorial> deleteAll() {
+    ResponseEntity<Course> deleteAll() {
         try {
-            repository.deleteAll();
+            courseRepository.deleteAll();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,13 +76,13 @@ public class TutorialController {
     }
 
     @GetMapping("/published/")
-    ResponseEntity<List<Tutorial>> published(@PathVariable Long id) {
+    ResponseEntity<List<Course>> published(@PathVariable Long id) {
         try {
-            List<Tutorial> tutorials = repository.findByPublished("Physics");
-            if (tutorials.isEmpty()) {
+            List<Course> courses = courseRepository.findByPublished("Physics");
+            if (courses.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(tutorials, HttpStatus.OK);
+            return new ResponseEntity<>(courses, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

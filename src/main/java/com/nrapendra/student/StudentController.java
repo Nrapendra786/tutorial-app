@@ -1,14 +1,20 @@
 package com.nrapendra.student;
 
 
-import com.nrapendra.commons.NoSuchElementException;
+import com.nrapendra.commons.exceptions.NoSuchElementException;
+import com.nrapendra.course.Course;
+import com.nrapendra.course.CourseRepository;
+import com.nrapendra.teacher.Teacher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin
@@ -18,15 +24,17 @@ import java.util.Optional;
 @AllArgsConstructor
 public class StudentController {
 
+    @Autowired
     private StudentRepository studentRepository;
 
-    @GetMapping("/all/")
-    ResponseEntity<List<Student>> findAll() {
-        return new ResponseEntity<>(studentRepository.findAll(), HttpStatus.OK);
-    }
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("/{id}")
-    ResponseEntity<Student> findOne(@PathVariable Long id) {
+    ResponseEntity<Student> findOne(@PathVariable("id") Long id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
                         "Not found student with id = " + id));
@@ -34,7 +42,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Optional<Student>> update(@PathVariable Long id, @RequestBody Student student) {
+    ResponseEntity<Optional<Student>> update(@PathVariable("id") Long id, @RequestBody Student student) {
         try {
             Optional.ofNullable(studentRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"student is not found")));
@@ -53,5 +61,29 @@ public class StudentController {
         } catch (Exception ex) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/course/{name}/student/{id}")
+    ResponseEntity<Student> registerCourse(@PathVariable("name") String courseName,@PathVariable("id") Long id) {
+
+        Optional<Course> course = courseRepository.findByCourseName(courseName);
+        Optional.ofNullable(studentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"student is not found")));
+
+        if(course.isPresent()){
+
+            String teacherName = course.get().getTeacher().getTeacherName();
+            String url = "http://localhost:8090/teachers/" + teacherName + "/course/" + courseName + "/student/" + id;
+
+//            ResponseEntity<Teacher> responseEntity = restTemplate.exchange(
+//                    url,
+//                    HttpMethod.POST,
+//                    HttpEntity.EMPTY,
+//                    Teacher.class
+//            );
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return null;
     }
 }

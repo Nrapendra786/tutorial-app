@@ -1,8 +1,9 @@
 package com.nrapendra.course;
 
-import com.nrapendra.commons.NoSuchElementException;
+import com.nrapendra.commons.exceptions.NoSuchElementException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,8 @@ public class CourseController {
 
     private CourseRepository courseRepository;
 
-    @GetMapping("/all/")
-    ResponseEntity<List<Course>> findAll() {
-        return new ResponseEntity<>(courseRepository.findAll(),HttpStatus.OK);
-    }
-
     @GetMapping("/{id}")
-    ResponseEntity<Course> findOne(@PathVariable Long id) {
+    ResponseEntity<Course> findOne(@PathVariable("id") Long id) {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
@@ -34,7 +30,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Optional<Course>> update(@PathVariable Long id, @RequestBody Course course) {
+    ResponseEntity<Optional<Course>> update(@PathVariable("id") Long id, @RequestBody Course course) {
         try {
             Optional.ofNullable(courseRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"course is not found")));
@@ -56,7 +52,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Course> delete(@PathVariable Long id) {
+    ResponseEntity<Course> delete(@PathVariable("id") Long id) {
         try {
             courseRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -65,18 +61,8 @@ public class CourseController {
         }
     }
 
-    @DeleteMapping("/")
-    ResponseEntity<Course> deleteAll() {
-        try {
-            courseRepository.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/published/")
-    ResponseEntity<List<Course>> published(@PathVariable Long id) {
+    ResponseEntity<List<Course>> published(@PathVariable("id") Long id) {
         try {
             List<Course> courses = courseRepository.findByPublished("Physics");
             if (courses.isEmpty()) {

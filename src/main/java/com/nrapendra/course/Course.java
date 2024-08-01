@@ -6,8 +6,6 @@ import com.nrapendra.teacher.Teacher;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Table(name = "course")
 @Entity
 @Getter
@@ -19,7 +17,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "courseName",nullable = false)
     private String courseName;
@@ -38,4 +36,7 @@ public class Course {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="teacher_id")
+    private Teacher teacher;
 }

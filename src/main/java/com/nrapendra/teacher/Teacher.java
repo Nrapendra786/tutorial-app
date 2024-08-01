@@ -15,13 +15,9 @@ public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "teacher_name",nullable = false)
     private String teacherName;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="course_id")
-    private Course course;
 
 }

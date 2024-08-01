@@ -8,10 +8,13 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -20,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EducationApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
-@Disabled
+//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@DirtiesContext
+//@Disabled
 public class CourseControllerTest {
 
     private static final String COURSE_URL = "/courses/";
@@ -29,7 +34,7 @@ public class CourseControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CourseRepository tutorialRepository;
+    private CourseRepository courseRepository;
 
     @LocalServerPort
     private int port;
@@ -61,25 +66,6 @@ public class CourseControllerTest {
         Assertions.assertEquals(postResponse.getBody().getTitle(), "physics");
         Assertions.assertEquals(postResponse.getBody().getPublished(), "physics");
         Assertions.assertEquals(postResponse.getBody().getCourseName(), "physics");
-    }
-
-    @Test
-    public void testGetAllTutorials() {
-        //given
-        HttpEntity<String> entity = new HttpEntity<String>(null, new HttpHeaders());
-        long id = atomicLong.get();
-        saveToTutorial(id);
-
-        //when
-        ResponseEntity<Course[]> postResponse = restTemplate.exchange(getRootUrl() + COURSE_URL + "/all/",
-                HttpMethod.GET, entity, Course[].class);
-
-        //then
-        Course[] tutorialArray = postResponse.getBody();
-        assert tutorialArray != null;
-        Assertions.assertEquals(tutorialArray[0].getDescription(), "physics tutorial");
-        Assertions.assertEquals(tutorialArray[0].getTitle(), "physics");
-        Assertions.assertEquals(tutorialArray[0].getPublished(), "physics");
     }
 
     @Test
@@ -127,7 +113,6 @@ public class CourseControllerTest {
     }
 
     @Test
-    @Disabled
     public void testDeleteTutorial() {
         //given
         long id = atomicLong.get();
@@ -151,7 +136,7 @@ public class CourseControllerTest {
                 .id(id)
                 .courseName("physics")
                 .description("physics tutorial").title("physics").published("physics").build();
-        tutorialRepository.saveAndFlush(tutorial);
+        courseRepository.saveAndFlush(tutorial);
     }
 
 }

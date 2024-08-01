@@ -1,4 +1,4 @@
-package com.nrapendra.commons;
+package com.nrapendra.commons.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

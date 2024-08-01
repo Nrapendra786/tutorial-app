@@ -23,9 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EducationApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
-//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @DirtiesContext
-//@Disabled
 public class CourseControllerTest {
 
     private static final String COURSE_URL = "/courses/";

@@ -64,26 +64,21 @@ public class StudentController {
     }
 
     @PostMapping("/course/{name}/student/{id}")
-    ResponseEntity<Student> registerCourse(@PathVariable("name") String courseName,@PathVariable("id") Long id) {
+    ResponseEntity<Optional<Student>> registerCourse(@PathVariable("name") String courseName,@PathVariable("id") Long id) {
 
-        Optional<Course> course = courseRepository.findByCourseName(courseName);
-        Optional.ofNullable(studentRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"student is not found")));
+        Optional<Course> course = Optional.ofNullable(courseRepository.findByCourseName(courseName)
+                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "course is not found")));
 
-        if(course.isPresent()){
+        Optional<Student> student = Optional.ofNullable(studentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "student is not found")));
 
+        if (course.isPresent()) {
             String teacherName = course.get().getTeacher().getTeacherName();
-            String url = "http://localhost:8090/teachers/" + teacherName + "/course/" + courseName + "/student/" + id;
-
-//            ResponseEntity<Teacher> responseEntity = restTemplate.exchange(
-//                    url,
-//                    HttpMethod.POST,
-//                    HttpEntity.EMPTY,
-//                    Teacher.class
-//            );
+            String url = "http://localhost:8090/teachers/" + teacherName + "/courses/" + courseName + "/students/" + id;
+            ResponseEntity<Teacher> responseEntity = restTemplate.postForEntity(url, null, Teacher.class);
+            return new ResponseEntity<>(student, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
 }

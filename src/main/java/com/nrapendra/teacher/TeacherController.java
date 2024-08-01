@@ -1,7 +1,10 @@
 package com.nrapendra.teacher;
 
 import com.nrapendra.commons.exceptions.NoSuchElementException;
+import com.nrapendra.course.Course;
+import com.nrapendra.course.CourseRepository;
 import com.nrapendra.student.Student;
+import com.nrapendra.student.StudentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,10 @@ import java.util.Optional;
 public class TeacherController {
 
     private TeacherRepository teacherRepository;
+
+    private CourseRepository courseRepository;
+
+    private StudentRepository studentRepository;
 
     @GetMapping("/{id}")
     ResponseEntity<Teacher> findOne(@PathVariable("id") Long id) {
@@ -49,11 +56,26 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/{teacherName}/course/{courseName}/student/{id}")
-    ResponseEntity<Teacher> accept(@PathVariable("teacherName") String teacherName,
+    @PostMapping("/{teacherName}/courses/{courseName}/students/{id}")
+    ResponseEntity<Optional<Teacher>> accept(@PathVariable("teacherName") String teacherName,
                                    @PathVariable("courseName") String courseName,
-                                   @PathVariable("student") Long id) {
+                                   @PathVariable("id") Long id) {
 
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        Optional<Teacher> teacher = Optional.ofNullable(teacherRepository.findByTeacherName(teacherName)
+                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "teacher not found")));
+
+        Optional<Course> courseOptional = Optional.ofNullable(courseRepository.findByCourseName(courseName)
+                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "course not found")));
+
+        Optional<Student> student = Optional.ofNullable(studentRepository.findById(id).
+                orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "student not found")));
+
+        if(courseOptional.isPresent() && teacher.isPresent() && student.isPresent()){
+            Course courseRef = courseOptional.get();
+            courseRef.setTeacher(teacher.get());
+            courseRef.setStudent(student.get());
+            courseRepository.saveAndFlush(courseRef);
+        }
+        return new ResponseEntity<>(teacher, HttpStatus.CREATED);
     }
 }

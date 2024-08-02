@@ -2,7 +2,7 @@ This is education API developed using Java, SpringBoot, Docker, Prometheus and G
 
 Purpose :
 This application allow student to participate in courses taught by teachers. Once teacher granted student
-to participate then student can join the course.
+to participate in the course then student can join the course.
 
 -- Java 17 or higher version and Docker must be installed in system   
 -- start cmd 

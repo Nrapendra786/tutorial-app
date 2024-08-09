@@ -1,4 +1,4 @@
-This is education API developed using Java, SpringBoot, Docker, Prometheus and Grafana
+This project is an Education API developed using Java, SpringBoot, Docker, Prometheus and Grafana
 
 Purpose :
 This application allow student to participate in courses taught by teachers. Once teacher granted student

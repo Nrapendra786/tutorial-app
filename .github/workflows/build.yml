@@ -56,7 +56,7 @@ jobs:
 
       # Move to the desired directory if necessary
       - name: Ensure Correct Directory
-        run: cd /home/runner/work/tutorial-app/   
+        run: cd /home/runner/work/  
 
       # Build the Docker image
       - name: Build Docker Image for TutorialApp

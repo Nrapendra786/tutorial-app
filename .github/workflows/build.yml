@@ -49,4 +49,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tutorail-app:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-restful-webservices-0.0.1

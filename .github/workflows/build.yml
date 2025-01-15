@@ -46,7 +46,7 @@ jobs:
       
       - name: Build Docker Image for TutorialApp
         working-directory: /
-        run: docker build -t  tutorial-app .
+        run: docker build -t  tutorial-app ./Dockerfile
 
       - name: Push Docker Image to Docker Hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/tutorial-app

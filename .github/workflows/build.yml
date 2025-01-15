@@ -54,10 +54,14 @@ jobs:
       - name: Debug File Listing
         run: ls -la ./  # Adjust path as necessary   
 
+      # Move to the desired directory if necessary
+      - name: Ensure Correct Directory
+        run: cd /home/runner/work/tutorial-app/   
+
       # Build the Docker image
       - name: Build Docker Image for TutorialApp
         run:  docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/tutorial-app .
-        working-directory: cd ../.. && tutorial-app  # Adjust if your Dockerfile is in a different directory
+        working-directory: /home/runner/work/tutorial-app/  # Adjust if your Dockerfile is in a different directory
 
       # Push the Docker image to Docker Hub
       - name: Push Docker Image to Docker Hub

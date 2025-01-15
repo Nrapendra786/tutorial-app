@@ -50,6 +50,9 @@ jobs:
       # Debug Docker Tag
       - name: Debug Docker Tag
         run: echo "Docker Tag:${{ secrets.DOCKERHUB_USERNAME }}/tutorial-app"
+     
+      - name: Debug File Listing
+        run: ls -la ./tutorial-app  # Adjust path as necessary   
 
       # Build the Docker image
       - name: Build Docker Image for TutorialApp

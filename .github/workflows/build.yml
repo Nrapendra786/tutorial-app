@@ -61,7 +61,7 @@ jobs:
       # Build the Docker image
       - name: Build Docker Image for TutorialApp
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app .
-        working-directory: tutorial-app  # Adjust if your Dockerfile is in a different directory
+        working-directory: /  # Adjust if your Dockerfile is in a different directory
 
       # Push the Docker image to Docker Hub
       - name: Push Docker Image to Docker Hub

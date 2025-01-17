@@ -60,12 +60,12 @@ jobs:
 
       # Build the Docker image
       - name: Build Docker Image for TutorialApp
-        run: docker build -t app .
+        run: docker build -t ajay786/app .
       #  working-directory: home/runner/work/tutorial-app/  # Adjust if your Dockerfile is in a different directory
 
       # Push the Docker image to Docker Hub
       - name: Push Docker Image to Docker Hub
-        run: docker push app
+        run: docker push ajay786/app
 
       # Log out of Docker Hub
       - name: Log out of Docker Hub

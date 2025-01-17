@@ -46,17 +46,9 @@ jobs:
       # Set up Docker Buildx for multi-platform builds
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # Debug Docker Tag
-     # - name: Debug Docker Tag
-     #   run: echo "Docker Tag:${{ secrets.DOCKERHUB_USERNAME }}/tutorial-app"
      
       - name: Debug File Listing
-        run: ls -la ./  # Adjust path as necessary   
-
-      # Move to the desired directory if necessary
-     # - name: Ensure Correct Directory
-      #  run: cd /home/runner/work/  
+        run: ls -la ./  # Adjust path as necessary    
 
       # Build the Docker image
       - name: Build Docker Image for TutorialApp

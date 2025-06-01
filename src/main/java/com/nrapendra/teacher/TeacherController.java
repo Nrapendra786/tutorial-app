@@ -1,6 +1,6 @@
 package com.nrapendra.teacher;
 
-import com.nrapendra.commons.exceptions.NoSuchElementException;
+import com.nrapendra.commons.exceptions.NotFoundException;
 import com.nrapendra.course.Course;
 import com.nrapendra.course.CourseRepository;
 import com.nrapendra.student.Student;
@@ -29,8 +29,8 @@ public class TeacherController {
     @GetMapping("/{id}")
     ResponseEntity<Teacher> findOne(@PathVariable("id") Long id) {
         Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
-                        "Not found student with id = " + id));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND,
+                        "Not found teacher with id = " + id));
         return new ResponseEntity<>(teacher, HttpStatus.OK);
     }
 
@@ -38,7 +38,7 @@ public class TeacherController {
     ResponseEntity<Optional<Student>> update(@PathVariable("id") Long id, @RequestBody Teacher teacher) {
         try {
             Optional.ofNullable(teacherRepository.findById(id)
-                    .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"student is not found")));
+                    .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND,"student is not found")));
             teacherRepository.saveAndFlush(teacher);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception ex) {
@@ -62,13 +62,13 @@ public class TeacherController {
                                    @PathVariable("id") Long id) {
 
         Optional<Teacher> teacher = Optional.ofNullable(teacherRepository.findByTeacherName(teacherName)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "teacher not found")));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "teacher not found")));
 
         Optional<Course> courseOptional = Optional.ofNullable(courseRepository.findByCourseName(courseName)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "course not found")));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "course not found")));
 
         Optional<Student> student = Optional.ofNullable(studentRepository.findById(id).
-                orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "student not found")));
+                orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "student not found")));
 
         if(courseOptional.isPresent() && teacher.isPresent() && student.isPresent()){
             Course courseRef = courseOptional.get();

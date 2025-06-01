@@ -4,7 +4,7 @@ import com.nrapendra.course.Course;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table
+@Table(name = "teacher")
 @Entity
 @Getter
 @Setter

@@ -1,4 +1,3 @@
-
 insert into student (id,name) values (1,'ajay');
 insert into student (id,name) values (2,'vijay');
 insert into student (id,name) values (3,'sanjay');

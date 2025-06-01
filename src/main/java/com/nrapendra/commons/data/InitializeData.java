@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 
 @Component
-@Profile("local")
+//@Profile("local")
+@Profile("dev")
 public class InitializeData {
 
     @Autowired

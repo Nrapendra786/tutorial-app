@@ -1,15 +1,13 @@
 package com.nrapendra.student;
 
 
-import com.nrapendra.commons.exceptions.NoSuchElementException;
+import com.nrapendra.commons.exceptions.NotFoundException;
 import com.nrapendra.course.Course;
 import com.nrapendra.course.CourseRepository;
 import com.nrapendra.teacher.Teacher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +34,7 @@ public class StudentController {
     @GetMapping("/{id}")
     ResponseEntity<Student> findOne(@PathVariable("id") Long id) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND,
                         "Not found student with id = " + id));
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
@@ -44,8 +42,8 @@ public class StudentController {
     @PutMapping("/{id}")
     ResponseEntity<Optional<Student>> update(@PathVariable("id") Long id, @RequestBody Student student) {
         try {
-            Optional.ofNullable(studentRepository.findById(id)
-                    .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"student is not found")));
+            studentRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND,"student is not found"));
             studentRepository.saveAndFlush(student);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception ex) {
@@ -67,10 +65,10 @@ public class StudentController {
     ResponseEntity<Optional<Student>> registerCourse(@PathVariable("name") String courseName,@PathVariable("id") Long id) {
 
         Optional<Course> course = Optional.ofNullable(courseRepository.findByCourseName(courseName)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "course is not found")));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "course is not found")));
 
         Optional<Student> student = Optional.ofNullable(studentRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND, "student is not found")));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "student is not found")));
 
         if (course.isPresent()) {
             String teacherName = course.get().getTeacher().getTeacherName();

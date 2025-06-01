@@ -1,9 +1,8 @@
 package com.nrapendra.course;
 
-import com.nrapendra.commons.exceptions.NoSuchElementException;
+import com.nrapendra.commons.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,7 @@ public class CourseController {
     ResponseEntity<Course> findOne(@PathVariable("id") Long id) {
 
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND,
                                     "Not found course with id = " + id));
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
@@ -32,8 +31,7 @@ public class CourseController {
     @PutMapping("/{id}")
     ResponseEntity<Optional<Course>> update(@PathVariable("id") Long id, @RequestBody Course course) {
         try {
-            Optional.ofNullable(courseRepository.findById(id)
-                    .orElseThrow(() -> new NoSuchElementException(HttpStatus.NOT_FOUND,"course is not found")));
+            courseRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND,"course is not found"));
             courseRepository.saveAndFlush(course);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception ex) {

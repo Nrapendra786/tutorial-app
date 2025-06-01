@@ -4,12 +4,9 @@ import com.nrapendra.course.Course;
 import com.nrapendra.course.CourseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -21,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = EducationApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = TutorialApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 @DirtiesContext
 public class CourseControllerTest {
@@ -81,10 +78,10 @@ public class CourseControllerTest {
 
         Course getResponse = restTemplate.getForObject(getRootUrl() + COURSE_URL + tutorialResponse.getBody().getId(), Course.class);
 
-        Assertions.assertEquals(getResponse.getDescription(), "physics tutorial");
-        Assertions.assertEquals(getResponse.getTitle(), "physics");
-        Assertions.assertEquals(getResponse.getPublished(), "physics");
-        Assertions.assertEquals(getResponse.getCourseName(), "physics");
+        Assertions.assertEquals("physics tutorial", getResponse.getDescription());
+        Assertions.assertEquals("physics", getResponse.getTitle());
+        Assertions.assertEquals("physics", getResponse.getPublished());
+        Assertions.assertEquals("physics", getResponse.getCourseName());
     }
 
     @Test
